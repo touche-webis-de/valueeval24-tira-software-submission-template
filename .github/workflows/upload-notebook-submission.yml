@@ -33,10 +33,6 @@ jobs:
           echo "IMAGE_TAG=registry.webis.de/code-research/tira/tira-user-ir-lab-sose-2023-order-google-scholar/notebook-submission:${{ github.sha }}" >> $GITHUB_ENV
           echo "INPUT_DIRECTORY=${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/" >> $GITHUB_ENV
       -
-        name: Set environment variable for full image tag
-        run: |
-          env
-      -
         name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
@@ -53,10 +49,6 @@ jobs:
           context: ${{ github.workspace }}/jupyter-notebook-submissions
           load: true
           tags: ${{ env.IMAGE_TAG }}
-      -
-        name: list images
-        run: |
-          docker images
       -
         name: Sandbox test
         run: |
