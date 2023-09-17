@@ -50,6 +50,10 @@ jobs:
           load: true
           tags: ${{ env.IMAGE_TAG }}
       -
+        name: list images
+        run: |
+          docker images
+      -
         name: Sandbox test
         run: |
           tira-run --input-directory ${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/ --output-directory /tmp/tira-output --image ${{ env.IMAGE_TAG }} --command '/workspace/run-pyterrier-notebook.py --input ${TIRA_INPUT_DIRECTORY} --output ${TIRA_OUTPUT_DIRECTORY} --notebook /workspace/${{ inputs.notebook }}'
