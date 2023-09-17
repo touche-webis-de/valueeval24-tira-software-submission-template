@@ -31,7 +31,7 @@ jobs:
       -
         name: Set environment variable for full image tag
         run: |
-          echo "IMAGE_TAG=registry.webis.de/code-research/tira/${{ secrets.DOCKERHUB_USERNAME }}/notebook-submission-${{ GITHUB_SHA }}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=registry.webis.de/code-research/tira/${{ secrets.DOCKERHUB_USERNAME }}/notebook-submission-${{ github.sha }}" >> $GITHUB_ENV
           echo "INPUT_DIRECTORY=${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/" >> $GITHUB_ENV
       -
         name: Set up Python 3.8
