@@ -45,6 +45,7 @@ jobs:
           pip3 freeze|grep tira
       - name: x
         run: |
+          docker pull bash:latest
           docker tag bash:latest ${{ env.IMAGE_TAG }}
           docker run ${{ env.IMAGE_TAG }} -c 'echo "hallo welt"'
       -
