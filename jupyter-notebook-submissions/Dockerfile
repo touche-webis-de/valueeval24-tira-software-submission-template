@@ -1,5 +1,7 @@
 FROM webis/tira-ir-starter-pyterrier:0.0.3-base
 
+RUN rm -Rf /workspace/*.ipynb
+
 ADD *.ipynb /workspace
 
 ADD example-ir-dataset /tmp-delete-ir-dataset
@@ -10,4 +12,5 @@ RUN export TIRA_INPUT_DIRECTORY=/tmp-delete-ir-dataset \
 	&& rm -R /tmp-delete-ir-dataset \
 	&& head -3 /tmp/run.txt \
 	&& rm /tmp/run.txt \
-	&& rm -R /root/.ir_datasets
+	&& rm -R /root/.ir_datasets \
+	&& jupyter trust /workspace/*.ipynb
