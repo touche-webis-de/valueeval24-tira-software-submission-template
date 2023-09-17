@@ -42,25 +42,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install tira>=0.0.58
-          pip3 freeze|grep tira
-      - name: x
+      - name: Build, test, and upload image
         run: |
-          docker pull bash:latest
-          docker tag bash:latest ${{ env.IMAGE_TAG }}
-          docker run ${{ env.IMAGE_TAG }} -c 'echo "hallo welt"'
-      -
-        name: Build and export to Docker
-        uses: docker/build-push-action@v4
-        with:
-          context: ${{ github.workspace }}/jupyter-notebook-submissions
-          load: true
-          tags: ${{ env.IMAGE_TAG }}
-      -
-        name: Sandbox test
-        run: |
+          docker build -t ${{ env.IMAGE_TAG }} ${{ github.workspace }}/jupyter-notebook-submissions
           tira-run --input-directory ${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/ --output-directory /tmp/tira-output --image ${{ env.IMAGE_TAG }} --command '/workspace/run-pyterrier-notebook.py --input ${TIRA_INPUT_DIRECTORY} --output ${TIRA_OUTPUT_DIRECTORY} --notebook /workspace/${{ inputs.notebook }}'
-      -
-        name: Push Docker Image
-        
-        run: |
           docker push ${{ env.IMAGE_TAG }}
