@@ -43,6 +43,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install tira>=0.0.58
           pip3 freeze|grep tira
+      - name: x
+        run: |
+          docker tag bash:latest ${{ env.IMAGE_TAG }}
+          docker run ${{ env.IMAGE_TAG }} -c 'echo "hallo welt"'
       -
         name: Build and export to Docker
         uses: docker/build-push-action@v4
