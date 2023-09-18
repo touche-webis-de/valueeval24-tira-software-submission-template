@@ -28,12 +28,7 @@ jobs:
           username: tira-user-ir-lab-sose-2023-order-google-scholar
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Set environment variable for full image tag
-        run: |
-          echo "IMAGE_TAG=registry.webis.de/code-research/tira/tira-user-ir-lab-sose-2023-order-google-scholar/notebook-submission:${{ github.sha }}" >> $GITHUB_ENV
-          echo "INPUT_DIRECTORY=${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/" >> $GITHUB_ENV
-      -
-        name: Set up Python 3.8
+        name: Set up Dependencies
         uses: actions/setup-python@v4
         with:
           python-version: 3.8
@@ -41,9 +36,16 @@ jobs:
         name: Install required python packages
         run: |
           python -m pip install --upgrade pip
-          pip install tira>=0.0.58
+          pip install tira>=0.0.59
+
+      -
+        name: Set environment variables
+        run: |
+          echo "IMAGE_TAG=registry.webis.de/code-research/tira/tira-user-ir-lab-sose-2023-order-google-scholar/notebook-submission:${{ github.sha }}" >> $GITHUB_ENV
+          echo "INPUT_DIRECTORY=${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/" >> $GITHUB_ENV
+          tira-run --export-submission-from-jupyter-notebook ${{ github.workspace }}/jupyter-notebook-submissions/${{ inputs.notebook }} >> $GITHUB_ENV
       - name: Build, test, and upload image
         run: |
           docker build -t ${{ env.IMAGE_TAG }} ${{ github.workspace }}/jupyter-notebook-submissions
-          tira-run --input-directory ${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/ --output-directory /tmp/tira-output --image ${{ env.IMAGE_TAG }} --command '/workspace/run-pyterrier-notebook.py --input ${TIRA_INPUT_DIRECTORY} --output ${TIRA_OUTPUT_DIRECTORY} --notebook /workspace/${{ inputs.notebook }}'
+          tira-run --input-directory ${{ env.INPUT_DIRECTORY }} --output-directory /tmp/tira-output --image ${{ env.IMAGE_TAG }} --command '${{ env.TIRA_COMMAND }}'
           docker push ${{ env.IMAGE_TAG }}
