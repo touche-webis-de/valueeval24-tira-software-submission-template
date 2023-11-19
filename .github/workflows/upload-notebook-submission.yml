@@ -35,13 +35,20 @@ jobs:
         name: Install required python packages
         run: |
           python -m pip install --upgrade pip
-          pip install tira>=0.0.81
+          pip install tira>=0.0.83
       -
         name: Set environment variables
         run: |
           echo "IMAGE_TAG=registry.webis.de/code-research/tira/tira-user-TIRA_USER_FOR_AUTOMATIC_REPLACEMENT/submission:${{ github.sha }}" >> $GITHUB_ENV
           echo "INPUT_DIRECTORY=${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/" >> $GITHUB_ENV
           echo "TIRA_JUPYTER_NOTEBOOK=${{ inputs.notebook }}" >> $GITHUB_ENV
+          echo "TIRA_DOCKER_REGISTRY_TOKEN=${{ secrets.TIRA_DOCKER_REGISTRY_TOKEN }}" >> $GITHUB_ENV
+          echo "TIRA_DOCKER_REGISTRY_USER=${{ secrets.TIRA_DOCKER_REGISTRY_USER }}" >> $GITHUB_ENV
+          echo "TIRA_CLIENT_TOKEN=${{ secrets.TIRA_CLIENT_TOKEN }}" >> $GITHUB_ENV
+          echo "TIRA_CLIENT_USER=${{ secrets.TIRA_CLIENT_USER }}" >> $GITHUB_ENV
+          echo "TIRA_TASK_ID=${{ secrets.TIRA_TASK_ID }}" >> $GITHUB_ENV
+          echo "TIRA_CODE_REPOSITORY_ID=${{ secrets.TIRA_CODE_REPOSITORY_ID }}" >> $GITHUB_ENV
+          echo "TIRA_VM_ID=${{ secrets.TIRA_VM_ID }}" >> $GITHUB_ENV 
           tira-run --export-submission-from-jupyter-notebook ${{ github.workspace }}/jupyter-notebook-submissions/${{ inputs.notebook }} >> $GITHUB_ENV
       - name: Build, test, and upload image
         run: |

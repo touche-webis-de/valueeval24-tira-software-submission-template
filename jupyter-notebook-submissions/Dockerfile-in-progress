@@ -1,4 +1,0 @@
-#docker build -t webis/tira-ir-starter-pyterrier:0.0.3-base -f Dockerfile-in-progress .
-FROM webis/tira-ir-starter-pyterrier:0.0.2-base
-
-RUN pip3 uninstall -y tira && pip3 install tira==0.0.55
