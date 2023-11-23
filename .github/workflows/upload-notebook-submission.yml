@@ -1,3 +1,4 @@
+name: Upload Notebook to TIRA
 on: 
   workflow_dispatch:
     inputs:
