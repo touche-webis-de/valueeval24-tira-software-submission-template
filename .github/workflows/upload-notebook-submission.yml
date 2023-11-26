@@ -40,18 +40,22 @@ jobs:
           pip install tira==0.0.100
       -
         name: Set environment variables
+        env:
+          TIRA_TASK_ID: ir-lab-jena-leipzig-wise-2023
+          TIRA_VM_ID: ir-lab-test-mf-11-20-23-01
         run: |
-          echo "IMAGE_TAG=registry.webis.de/code-research/tira/tira-user-TIRA_USER_FOR_AUTOMATIC_REPLACEMENT/submission:${{ github.sha }}" >> $GITHUB_ENV
-          echo "INPUT_DIRECTORY=${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/" >> $GITHUB_ENV
-          echo "TIRA_JUPYTER_NOTEBOOK=${{ inputs.notebook }}" >> $GITHUB_ENV
-          echo "TIRA_DOCKER_REGISTRY_TOKEN=${{ secrets.TIRA_DOCKER_REGISTRY_TOKEN }}" >> $GITHUB_ENV
-          echo "TIRA_DOCKER_REGISTRY_USER=${{ secrets.TIRA_DOCKER_REGISTRY_USER }}" >> $GITHUB_ENV
-          echo "TIRA_CLIENT_TOKEN=${{ secrets.TIRA_CLIENT_TOKEN }}" >> $GITHUB_ENV
-          echo "TIRA_CLIENT_USER=${{ secrets.TIRA_CLIENT_USER }}" >> $GITHUB_ENV
-          echo "TIRA_TASK_ID=${{ secrets.TIRA_TASK_ID }}" >> $GITHUB_ENV
-          echo "TIRA_CODE_REPOSITORY_ID=${{ secrets.TIRA_CODE_REPOSITORY_ID }}" >> $GITHUB_ENV
-          echo "TIRA_VM_ID=${{ secrets.TIRA_VM_ID }}" >> $GITHUB_ENV 
-          tira-run --export-submission-from-jupyter-notebook ${{ github.workspace }}/jupyter-notebook-submissions/${{ inputs.notebook }} >> $GITHUB_ENV
+          tira-run --export-submission-environment \
+          	GITHUB_SHA=${{ github.sha }} \
+          	TIRA_VM_ID=${{ env.TIRA_VM_ID }} \
+          	TIRA_TASK_ID=${{ env.TIRA_TASK_ID }} \
+          	TIRA_DOCKER_REGISTRY_TOKEN=${{ secrets.TIRA_DOCKER_REGISTRY_TOKEN }} \
+          	TIRA_DOCKER_REGISTRY_USER=${{ secrets.TIRA_DOCKER_REGISTRY_USER }} \
+          	TIRA_CLIENT_TOKEN=${{ secrets.TIRA_CLIENT_TOKEN }} \
+          	TIRA_CLIENT_USER=${{ secrets.TIRA_CLIENT_USER }} \
+          	TIRA_CODE_REPOSITORY_ID=${{ secrets.TIRA_CODE_REPOSITORY_ID }} \
+          	TIRA_JUPYTER_NOTEBOOK=${{ inputs.notebook }} \
+                INPUT_DIRECTORY=${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/ \
+          	>> $GITHUB_ENV 
       - name: Build, test, and upload image
         run: |
           docker build -t ${{ env.IMAGE_TAG }} --build-arg JUPYTER_NOTEBOOK=${{inputs.notebook}} ${{ github.workspace }}/jupyter-notebook-submissions
