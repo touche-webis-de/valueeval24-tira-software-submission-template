@@ -1,4 +1,4 @@
-name: Upload Notebook to TIRA
+name: Upload Docker Software to TIRA
 on: 
   workflow_dispatch:
     inputs:
@@ -54,7 +54,6 @@ jobs:
           	TIRA_CLIENT_USER=${{ secrets.TIRA_CLIENT_USER }} \
           	TIRA_CODE_REPOSITORY_ID=${{ secrets.TIRA_CODE_REPOSITORY_ID }} \
           	TIRA_JUPYTER_NOTEBOOK=${{ inputs.notebook }} \
-                INPUT_DIRECTORY=${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/ \
           	>> $GITHUB_ENV 
       - name: Build, test, and upload image
         run: |
