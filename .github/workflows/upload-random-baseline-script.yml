@@ -1,11 +1,19 @@
-name: Upload Notebook to TIRA
+name: Upload Random Baseline Script
 on: 
   workflow_dispatch:
     inputs:
-      notebook:
-        description: 'The to-be-submitted jupyter notebook contained in the directory jupyter-notebook-submissions/.'
+      dockerpath:
+        description: The path to the directory where the Docker image should be build.
         required: true
-        default: 'pyterrier-notebook.ipynb'
+        default: random-baseline-script
+      command:
+        description: The command that is to be executed to run the software. The variable $inputDataset points to the input directory that contains the inputs.jsonl file, the variable $outputDir points to the directory where the resulting predictions.jsonl should be stored.
+        required: true
+        default: python /random_baseline.py $inputDataset $outputDir
+      dockerfile:
+        description: The Dockerfile to build. This Dockerfile is expected to be contained within the dockerpath.
+        required: false
+        default: Dockerfile
 
 jobs:
   docker-build:
@@ -37,7 +45,7 @@ jobs:
         name: Install required python packages
         run: |
           python -m pip install --upgrade pip
-          pip install tira==0.0.100
+          pip install tira==0.0.102
       -
         name: Set environment variables
         env:
@@ -53,11 +61,12 @@ jobs:
           	TIRA_CLIENT_TOKEN=${{ secrets.TIRA_CLIENT_TOKEN }} \
           	TIRA_CLIENT_USER=${{ secrets.TIRA_CLIENT_USER }} \
           	TIRA_CODE_REPOSITORY_ID=${{ secrets.TIRA_CODE_REPOSITORY_ID }} \
-          	TIRA_JUPYTER_NOTEBOOK=${{ inputs.notebook }} \
-                INPUT_DIRECTORY=${{ github.workspace }}/jupyter-notebook-submissions/example-ir-dataset/ \
+          	TIRA_DOCKER_FILE=${{ inputs.dockerfile }} \
+          	TIRA_DOCKER_PATH=${{ inputs.dockerpath }} \
+          	TIRA_COMMAND=${{ inputs.command }} \
           	>> $GITHUB_ENV 
       - name: Build, test, and upload image
         run: |
-          docker build -t ${{ env.IMAGE_TAG }} --build-arg JUPYTER_NOTEBOOK=${{inputs.notebook}} ${{ github.workspace }}/jupyter-notebook-submissions
-          tira-run --input-directory ${{ env.INPUT_DIRECTORY }} --image ${{ env.IMAGE_TAG }} --push true
+          docker build -t ${{ env.IMAGE_TAG }} -f ${{ github.workspace }}/random-baseline-script
+          tira-run --input-dataset TIRA_DATASET_FOR_AUTOMATIC_REPLACEMENT --image ${{ env.IMAGE_TAG }} --push true
 
