@@ -7,7 +7,7 @@ on:
         required: true
         default: random-baseline-script
       command:
-        description: The command that is to be executed to run the software. The variable $inputDataset points to the input directory that contains the inputs.jsonl file, the variable $outputDir points to the directory where the resulting predictions.jsonl should be stored.
+        description: The command that is to be executed to run the software. The variable $inputDataset points to the input directory that contains the sentences.tsv file, the variable $outputDir points to the directory where the resulting predictions.tsv should be stored.
         required: true
         default: python /random_baseline.py $inputDataset $outputDir
       dockerfile:
