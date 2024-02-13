@@ -63,10 +63,10 @@ jobs:
           	TIRA_CODE_REPOSITORY_ID=${{ secrets.TIRA_CODE_REPOSITORY_ID }} \
           	TIRA_DOCKER_FILE=${{ inputs.dockerfile }} \
           	TIRA_DOCKER_PATH=${{ inputs.dockerpath }} \
-          	TIRA_COMMAND=${{ inputs.command }} \
+          	TIRA_COMMAND="${{ inputs.command }}" \
           	>> $GITHUB_ENV 
       - name: Build, test, and upload image
         run: |
-          docker build -t ${{ env.IMAGE_TAG }} -f ${{ github.workspace }}/random-baseline-script
+          docker build -t ${{ env.IMAGE_TAG }} -f ${{ github.workspace }}/random-baseline-script ${{TIRA_DOCKER_PATH}}
           tira-run --input-dataset TIRA_DATASET_FOR_AUTOMATIC_REPLACEMENT --image ${{ env.IMAGE_TAG }} --push true
 
