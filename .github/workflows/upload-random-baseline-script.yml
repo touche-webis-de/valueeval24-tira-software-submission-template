@@ -1,4 +1,4 @@
-name: Upload Script Submission From Directory
+name: Upload Random Baseline Notebook
 on: 
   workflow_dispatch:
     inputs:
